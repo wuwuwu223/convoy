@@ -1,4 +1,4 @@
-module github.com/wuwuwu223/convoy-sdk-go
+module github.com/wuwuwu223/convoy
 
 go 1.19
 
