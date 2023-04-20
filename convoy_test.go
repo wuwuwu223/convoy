@@ -1,7 +1,9 @@
 package convoy
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
+	"net/url"
 	"os"
 	"testing"
 )
@@ -175,7 +177,7 @@ func TestClient_GetServers(t *testing.T) {
 }
 
 func TestClient_GetServer(t *testing.T) {
-	uuid := "5fdaec4d-ba74-4c0e-889c-95a5fda54f6f"
+	uuid := "660d52e3-028a-455c-afa3-f6d38f305a45"
 	server, err := c.GetServer(uuid)
 	if err != nil {
 		t.Fatal(err)
@@ -238,4 +240,50 @@ func TestClient_DeleteServer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestClient_GetServerState(t *testing.T) {
+	state, err := c.GetServerState("660d52e3-028a-455c-afa3-f6d38f305a45")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(state)
+}
+
+func TestClient_UpdateServerState(t *testing.T) {
+	//start, stop, restart, kill, reinstall
+	err := c.UpdateServerState("660d52e3-028a-455c-afa3-f6d38f305a45", "restart")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestClient_GetServerAvailableOS(t *testing.T) {
+	os, err := c.GetServerAvailableOS("660d52e3-028a-455c-afa3-f6d38f305a45")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(os)
+}
+
+func TestClient_ReinstallServerOS(t *testing.T) {
+	req := ReinstallReq{
+		TemplateUuid:      "c8b1de32-4e02-4a87-b40d-e6abbdbc9a4a",
+		AccountPassword:   "q%#tUyLPAm@2q",
+		StartOnCompletion: true,
+	}
+	err := c.ReinstallServerOS("660d52e3-028a-455c-afa3-f6d38f305a45", req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	TestClient_GetServer(t)
+}
+
+// 测试获取VNC地址
+func TestClient_GetServerVNC(t *testing.T) {
+	vnc, err := c.GetServerVNC("660d52e3-028a-455c-afa3-f6d38f305a45")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(fmt.Sprintf("https://%s:%d/novnc/novnc.html?console=qemu&virtualization=qemu&node=%s&vmid=%d&token=%s", vnc.Fqdn, vnc.Port, vnc.Node, vnc.Vmid, url.QueryEscape(vnc.Token)))
 }

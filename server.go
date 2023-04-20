@@ -103,3 +103,84 @@ func (c *Client) DeleteServer(uuid string) (err error) {
 	}
 	return
 }
+
+//下面的函数需要修改convoy源码才能用
+
+// GetServerState 获取服务器状态
+func (c *Client) GetServerState(uuid string) (state ServerState, err error) {
+	req, err := c.buildReq("GET", "/api/application/servers/"+uuid+"/state", nil)
+	if err != nil {
+		return
+	}
+	var resp struct {
+		Data ServerState `json:"data"`
+		ErrMsg
+	}
+	err = c.doReq(req, &resp)
+	state = resp.Data
+	return
+}
+
+// UpdateServerState 更新服务器状态
+func (c *Client) UpdateServerState(uuid string, state string) (err error) {
+	statereq := StateReq{
+		State: state,
+	}
+	req, err := c.buildReq("PATCH", "/api/application/servers/"+uuid+"/state", statereq)
+	if err != nil {
+		return
+	}
+	var resp struct {
+		ErrMsg
+	}
+	err = c.doReq(req, &resp)
+	if resp.ErrMsg.Message != "" {
+		err = fmt.Errorf(resp.ErrMsg.Message)
+		return
+	}
+	return
+}
+
+// GetServerAvailableOS 获取服务器可用的操作系统
+func (c *Client) GetServerAvailableOS(uuid string) (os []TemplateGroup, err error) {
+	req, err := c.buildReq("GET", "/api/application/servers/"+uuid+"/settings/template-groups", nil)
+	if err != nil {
+		return
+	}
+	var resp struct {
+		Data []TemplateGroup `json:"data"`
+		ErrMsg
+	}
+	err = c.doReq(req, &resp)
+	os = resp.Data
+	return
+}
+
+// ReinstallServerOS 重装系统
+func (c *Client) ReinstallServerOS(uuid string, reiq ReinstallReq) (err error) {
+	req, _ := c.buildReq("POST", "/api/application/servers/"+uuid+"/settings/reinstall", reiq)
+	var resp struct {
+		ErrMsg
+	}
+	err = c.doReq(req, &resp)
+	if resp.ErrMsg.Message != "" {
+		err = fmt.Errorf(resp.ErrMsg.Message)
+		return
+	}
+	return
+}
+
+// GetServerVNC 获取vnc信息
+func (c *Client) GetServerVNC(uuid string) (vnc VNC, err error) {
+	req, err := c.buildReq("GET", "/api/application/servers/"+uuid+"/terminal", nil)
+	if err != nil {
+		return
+	}
+	var resp struct {
+		Data VNC `json:"data"`
+		ErrMsg
+	}
+	err = c.doReq(req, &resp)
+	vnc = resp.Data
+	return
+}

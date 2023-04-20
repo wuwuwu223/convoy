@@ -136,3 +136,29 @@ type CreateServerReq struct {
 	TemplateUuid       string `json:"template_uuid"`
 	StartOnCompletion  bool   `json:"start_on_completion"`
 }
+
+type ServerState struct {
+	State       string  `json:"state"`
+	CpuUsed     float64 `json:"cpu_used"`
+	MemoryTotal int64   `json:"memory_total"`
+	MemoryUsed  int     `json:"memory_used"`
+	Uptime      int     `json:"uptime"`
+}
+
+type StateReq struct {
+	State string `json:"state"`
+}
+
+type ReinstallReq struct {
+	TemplateUuid      string `json:"template_uuid"`
+	AccountPassword   string `json:"account_password"`
+	StartOnCompletion bool   `json:"start_on_completion"`
+}
+
+type VNC struct {
+	Token string `json:"token"`
+	Node  string `json:"node"`
+	Vmid  int    `json:"vmid"`
+	Fqdn  string `json:"fqdn"`
+	Port  int    `json:"port"`
+}
