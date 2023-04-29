@@ -70,6 +70,34 @@ func (c *Client) SuspendServer(uuid string) (err error) {
 	return
 }
 
+type UpdateServerReq struct {
+	AddressIds     []int       `json:"address_ids"`
+	SnapshotLimit  int         `json:"snapshot_limit"`
+	BackupLimit    interface{} `json:"backup_limit"`
+	BandwidthLimit interface{} `json:"bandwidth_limit"`
+	BandwidthUsage int         `json:"bandwidth_usage"`
+	Cpu            int         `json:"cpu"`
+	Memory         int64       `json:"memory"`
+	Disk           int64       `json:"disk"`
+}
+
+func (c *Client) UpdateServer(uuid string, sreq UpdateServerReq) (err error) {
+	req, err := c.buildReq("PATCH", "/api/application/servers/"+uuid+"/settings/build", sreq)
+	if err != nil {
+		return
+	}
+	var resp struct {
+		Server
+		ErrMsg
+	}
+	err = c.doReq(req, &resp)
+	if resp.ErrMsg.Message != "" {
+		err = fmt.Errorf(resp.ErrMsg.Message)
+		return
+	}
+	return
+}
+
 // UnsuspendServer 恢复服务器
 func (c *Client) UnsuspendServer(uuid string) (err error) {
 	req, err := c.buildReq("POST", "/api/application/servers/"+uuid+"/settings/unsuspend", nil)

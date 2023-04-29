@@ -20,6 +20,7 @@ type Server struct {
 		Snapshots int   `json:"snapshots"`
 		Backups   int   `json:"backups"`
 		Bandwidth int64 `json:"bandwidth"`
+		Rate      *int  `json:"rate"`
 		Addresses struct {
 			Ipv4 []Address `json:"ipv4"`
 			Ipv6 []Address `json:"ipv6"`
@@ -129,6 +130,7 @@ type CreateServerReq struct {
 		Snapshots  int    `json:"snapshots"`
 		Backups    *int   `json:"backups"`
 		Bandwidth  *int64 `json:"bandwidth"`
+		Rate       *int   `json:"rate"`
 		AddressIds []int  `json:"address_ids"`
 	} `json:"limits"`
 	AccountPassword    string `json:"account_password"`
