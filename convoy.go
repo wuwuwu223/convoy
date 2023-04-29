@@ -53,7 +53,7 @@ func (c *Client) doReq(req *http.Request, v interface{}) (err error) {
 	}
 	defer do.Body.Close()
 	//如果返回的状态码不是200，就返回错误
-	if do.StatusCode != 200 && do.StatusCode != 204 {
+	if do.StatusCode != 200 && do.StatusCode != 204 && do.StatusCode != 500 {
 		err = fmt.Errorf("status code: %d", do.StatusCode)
 		return
 	}
