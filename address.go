@@ -6,7 +6,8 @@ import (
 
 // GetAddresses 获取地址列表
 func (c *Client) GetAddresses(nodeId string) (addresses []Address, err error) {
-	req, err := c.buildReq("GET", "/api/application/nodes/"+nodeId+"/addresses", nil)
+
+	req, err := c.buildReq("GET", "/api/application/nodes/"+nodeId+"/addresses?filter[server_id]=", nil)
 	if err != nil {
 		return
 	}
