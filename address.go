@@ -2,14 +2,22 @@ package convoy
 
 import (
 	"fmt"
+	"net/http"
 )
 
 // GetAddresses 获取地址列表
-func (c *Client) GetAddresses(nodeId string) (addresses []Address, err error) {
-
-	req, err := c.buildReq("GET", "/api/application/nodes/"+nodeId+"/addresses?filter[server_id]=", nil)
-	if err != nil {
-		return
+func (c *Client) GetAddresses(nodeId, iptype string) (addresses []Address, err error) {
+	var req *http.Request
+	if iptype == "ipv4" {
+		req, err = c.buildReq("GET", "/api/application/nodes/"+nodeId+"/addresses?filter[type]=ipv4&filter[server_id]=", nil)
+		if err != nil {
+			return
+		}
+	} else {
+		req, err = c.buildReq("GET", "/api/application/nodes/"+nodeId+"/addresses?filter[type]=ipv6&filter[server_id]=", nil)
+		if err != nil {
+			return
+		}
 	}
 	var resp struct {
 		Data []Address `json:"data"`
